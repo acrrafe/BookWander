@@ -54,6 +54,7 @@ import com.example.bookwander.model.Book
 fun HomeScreen(
     modifier: Modifier = Modifier,
     bookViewModel: BookWanderViewModel,
+    onClick: (Book) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
 
@@ -62,6 +63,7 @@ fun HomeScreen(
         is BookUiState.Success -> BooksListScreen(
             bookUiState.books,
             bookUiState.bookCategory,
+            onClick = onClick,
             bookViewModel = bookViewModel,
             contentPadding = contentPadding,
             modifier = modifier.fillMaxSize()
@@ -86,26 +88,26 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 fun BooksListScreen(
     booksTrend: List<Book>,
     booksCategorize: List<Book>,
+    onClick: (Book) -> Unit,
     bookViewModel: BookWanderViewModel,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ){
-    MaterialTheme {
-        LazyColumn (
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            contentPadding = contentPadding
-        ) {
-            item{
-                BookTrendList(books = booksTrend, modifier = modifier)
-            }
-            item{
-                BookCategoryList(bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
-            }
-
+    LazyColumn (
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        contentPadding = contentPadding
+    ) {
+        item{
+            BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
         }
+        item{
+            BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
+        }
+
     }
+
 }
 
 
@@ -113,6 +115,7 @@ fun BooksListScreen(
 fun BookTrendList(
     books: List<Book>,
     modifier: Modifier = Modifier,
+    onClick: (Book) -> Unit,
 ) {
     Column(
         modifier = modifier.padding(top=16.dp)
@@ -129,11 +132,11 @@ fun BookTrendList(
         ) {
             items(items = books, key = { book -> book.id }) { book ->
                 BookCard(
-                    books = book,
+                    book = book,
                     modifier = Modifier
                         .height(150.dp)
                         .aspectRatio(0.8f),
-                    onClick = { }
+                    onClick = onClick
                 )
             }
         }
@@ -142,7 +145,11 @@ fun BookTrendList(
 
 
 @Composable
-fun BookCategoryList(bookViewModel: BookWanderViewModel, books: List<Book>, modifier: Modifier) {
+fun BookCategoryList(
+    bookViewModel: BookWanderViewModel,
+    books: List<Book>, modifier: Modifier,
+    onClick: (Book) -> Unit,
+) {
     Column (
         modifier = modifier.padding(top = 24.dp)
     ) {
@@ -165,9 +172,12 @@ fun BookCategoryList(bookViewModel: BookWanderViewModel, books: List<Book>, modi
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             items(books, key = {book -> book.id}){
-                book -> BookCardWide(book = book, modifier = Modifier
-                .padding(vertical = 4.dp)
-                .aspectRatio(1f)
+                book -> BookCardWide(
+                book = book,
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .aspectRatio(1f),
+                onClick = onClick
                 )
             }
         }
@@ -178,19 +188,19 @@ fun BookCategoryList(bookViewModel: BookWanderViewModel, books: List<Book>, modi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookCard(
-    books: Book,
+    book: Book,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onClick: (Book) -> Unit,
 ) {
     val oldValue = "http"
     val newValue = "https"
-    val newImageUrl = books.volumeInfo.imageLinks?.thumbnail?.replace(oldValue, newValue)
+    val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue, newValue)
 //    Log.d("HomeScreen", newImageUrl!!)
       Card (
           modifier = modifier,
           elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
           shape = RoundedCornerShape(10.dp),
-          onClick = onClick
+          onClick = { onClick(book) }
       ){
               AsyncImage(model = ImageRequest.Builder(context = LocalContext.current)
                   .data(newImageUrl).crossfade(true).build(),
@@ -209,7 +219,8 @@ fun BookCard(
 @Composable
 fun BookCardWide(
     book: Book,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Book) -> Unit
 ){
     val numberOfAuthors = book.volumeInfo.authors
     val formattedAuthors = formatAuthors(numberOfAuthors)
@@ -222,7 +233,7 @@ fun BookCardWide(
             containerColor = Color.Transparent
         ),
         border = BorderStroke(2.dp, Color.LightGray),
-        onClick = { }
+        onClick = { onClick(book) }
     ){
         Column(
             modifier = Modifier

@@ -38,6 +38,7 @@ sealed interface BookUiState{
 }
 
 data class BookCategoryUiState(
+    val currentSelectedBook: Book? = null,
     val currentBookCategory: String
 )
 
@@ -70,18 +71,34 @@ class BookWanderViewModel(private val bookshelfRepository: BookshelfRepository):
             bookUiState = try {
                 booksTrending = bookshelfRepository.searchBook(TRENDING_CATEGORY).items
                 val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory).items
-                BookUiState.Success(booksTrending, booksCategory)
+                BookUiState.Success(booksTrending, booksCategory).also { newState->
+                    bookUiState = newState
+
+                    _bookCategoryUiState.update {
+                        it.copy(currentSelectedBook = booksTrending.firstOrNull())
+                    }
+
+                }
+
             } catch (e: IOException) {
                 BookUiState.Error(R.string.network_error)
             } catch (e: HttpException) {
                 BookUiState.Error(R.string.server_error)
             }
         }
+
+
     }
 
     fun updateBookCategory(currentBookCategory: String){
         _bookCategoryUiState.update {
             it.copy(currentBookCategory = currentBookCategory)
+        }
+    }
+
+    fun updateSelectedBook(book: Book){
+        _bookCategoryUiState.update {
+            it.copy(currentSelectedBook = book)
         }
     }
 
