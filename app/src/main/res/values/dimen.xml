@@ -7,7 +7,7 @@
     <dimen name="padding_list_gap">24dp</dimen>
     <dimen name="book_trending_card_size">150dp</dimen>
     <dimen name="book_category_card_size">140dp</dimen>
-    <dimen name="book_details_card_size">140dp</dimen>
+    <dimen name="book_details_card_size">180dp</dimen>
 
 
 

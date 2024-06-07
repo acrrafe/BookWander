@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,7 +46,9 @@ fun BookDetailsScreen(
     val uiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
 
    LazyColumn (
-       modifier = modifier.fillMaxSize(),
+       modifier = modifier
+           .fillMaxSize()
+           .padding(dimensionResource(id = R.dimen.padding_medium)),
        contentPadding = contentPadding
    ) {
        item{
@@ -62,14 +65,22 @@ fun BookContent(
 ){
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp), // Add padding if necessary
+            .fillMaxWidth(),// Add padding if necessary
         contentAlignment = Alignment.Center
     ) {
         BookImageWithAuthor(book = book)
     }
 
-    Text(text = book.volumeInfo.description, textAlign = TextAlign.Justify)
+    Text(text = "Description",
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Justify,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_medium))
+    )
+
+    Text(text = book.volumeInfo.description,
+        textAlign = TextAlign.Justify,
+        modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)))
 
 }
 
@@ -92,7 +103,7 @@ fun BookImageWithAuthor(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
         ){
-            Box(modifier = Modifier.size(140.dp)){
+            Box(modifier = Modifier.size(dimensionResource(id = R.dimen.book_details_card_size))){
                 val oldValue = "http"
                 val newValue = "https"
                 val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue,newValue)
@@ -110,7 +121,8 @@ fun BookImageWithAuthor(
                 style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .width(200.dp))
+                    .width(200.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_small)))
             Text(text = book.volumeInfo.publishedDate,
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
