@@ -69,7 +69,7 @@ fun BookContent(
         BookImageWithAuthor(book = book)
     }
 
-    Text(text = book.volumeInfo.description)
+    Text(text = book.volumeInfo.description, textAlign = TextAlign.Justify)
 
 }
 
