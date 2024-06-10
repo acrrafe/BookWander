@@ -165,19 +165,22 @@ fun BookCategoryList(
             onButtonClick = {
                 bookViewModel.updateBookCategory(it)
                 bookViewModel.getBookCategory(it)
-                            }, modifier = Modifier)
+                            }, 
+            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+        )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
-            modifier = modifier
-                .size(1000.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(700.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
             items(books, key = {book -> book.id}){
                 book -> BookCardWide(
                 book = book,
                 modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .aspectRatio(1f),
+                    .aspectRatio(0.8f),
                 onClick = onClick
                 )
             }
@@ -226,8 +229,7 @@ fun BookCardWide(
     val numberOfAuthors = book.volumeInfo.authors
     val formattedAuthors = formatAuthors(numberOfAuthors)
     Card(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
@@ -238,19 +240,22 @@ fun BookCardWide(
     ){
         Column(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_small)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             BooksListImageItem(
-                modifier = Modifier.size(dimensionResource(id = R.dimen.book_category_card_size)),
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.book_category_card_size)),
                 book = book
             )
             Text(text = "By $formattedAuthors",
                 style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .width(200.dp))
+                    .width(200.dp)
+                    .padding(top = dimensionResource(id = R.dimen.padding_small)))
         }
 
     }
@@ -275,7 +280,6 @@ fun BooksListImageItem(
             placeholder = painterResource(id = R.drawable.loading_img),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp)
         )
     }
 }
