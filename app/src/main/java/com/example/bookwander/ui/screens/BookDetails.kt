@@ -1,26 +1,21 @@
 package com.example.bookwander.ui.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -41,19 +36,19 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookwander.R
 import com.example.bookwander.model.Book
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Locale
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BookDetailsScreen(
     bookWanderViewModel: BookWanderViewModel,
@@ -75,6 +70,8 @@ fun BookDetailsScreen(
 }
 
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BookContent(
     book: Book,
@@ -82,7 +79,7 @@ fun BookContent(
 ){
     Box(
         modifier = modifier
-            .fillMaxWidth(),// Add padding if necessary
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         BookImageWithAuthor(book = book)
@@ -91,7 +88,7 @@ fun BookContent(
     BookExtraDetails(
         modifier = Modifier
             .fillMaxWidth()
-            .size(120.dp),
+            .size(100.dp),
         book = book
     )
 
@@ -221,9 +218,17 @@ fun BookExtraDetails(
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun formatDate(dateString: String): String{
+
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
-    val date = LocalDate.parse(dateString, inputFormatter)
     val outputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH)
-    return date.format(outputFormatter)
+
+    return try{
+        val date = LocalDate.parse(dateString, inputFormatter)
+        date.format(outputFormatter)
+    }catch (e: DateTimeParseException){
+        Log.e("BOOKDETAILS", "Invalid Date Format: $dateString", e)
+        if(!dateString.isEmpty()) dateString else "Invalid Date"
+    }
+
 }
 

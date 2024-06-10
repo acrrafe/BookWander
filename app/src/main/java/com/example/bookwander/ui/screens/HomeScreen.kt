@@ -196,8 +196,8 @@ fun BookCard(
     val oldValue = "http"
     val newValue = "https"
     val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue, newValue)
-//    Log.d("HomeScreen", newImageUrl!!)
-      Card (
+
+      Card(
           modifier = modifier,
           elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
           shape = RoundedCornerShape(10.dp),
