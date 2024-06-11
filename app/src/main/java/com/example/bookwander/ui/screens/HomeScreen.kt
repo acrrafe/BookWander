@@ -40,6 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.bookwander.R
 import com.example.bookwander.model.Book
@@ -47,7 +49,8 @@ import com.example.bookwander.model.Book
 /*
 * TODO: Apply proper layout and make the images clickable
 *  TODO: Find a good workaround in nested scrollable screen
-*
+* TODO: Implement my design to all Screen Sizes
+*  TODO: Do unit testing
 *
 * */
 
@@ -60,7 +63,7 @@ fun HomeScreen(
 ){
 
     when(val bookUiState = bookViewModel.bookUiState){
-        is BookUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
+        is BookUiState.Loading -> LoadingScreen()
         is BookUiState.Success -> BooksListScreen(
             bookUiState.books,
             bookUiState.bookCategory,
@@ -78,11 +81,14 @@ fun HomeScreen(
 }
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(id = R.drawable.loading_img),
-        contentDescription = stringResource(id = R.string.loading)
-    )
+    Box (modifier = modifier, contentAlignment = Alignment.Center){
+        Image(
+            modifier = Modifier.size(150.dp),
+            painter = painterResource(id = R.drawable.loading_img),
+            contentDescription = stringResource(id = R.string.loading),
+        )
+    }
+
 }
 
 @Composable
@@ -166,7 +172,8 @@ fun BookCategoryList(
                 bookViewModel.updateBookCategory(it)
                 bookViewModel.getBookCategory(it)
                             }, 
-            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+            modifier = Modifier
+                .padding(vertical = dimensionResource(id = R.dimen.padding_small))
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
@@ -196,24 +203,51 @@ fun BookCard(
     modifier: Modifier = Modifier,
     onClick: (Book) -> Unit,
 ) {
-    val oldValue = "http"
-    val newValue = "https"
-    val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue, newValue)
-
       Card(
           modifier = modifier,
           elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
           shape = RoundedCornerShape(10.dp),
           onClick = { onClick(book) }
       ){
-              AsyncImage(model = ImageRequest.Builder(context = LocalContext.current)
-                  .data(newImageUrl).crossfade(true).build(),
-                  contentDescription = stringResource(id = R.string.book_photo),
-                  error = painterResource(id = R.drawable.ic_broken_image),
-                  placeholder = painterResource(id = R.drawable.loading_img),
-                  contentScale = ContentScale.Crop,
-                  modifier = Modifier.fillMaxSize()
-              )
+          val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace("http", "https")
+          val context = LocalContext.current
+          val imagePainter = rememberAsyncImagePainter(
+              model = ImageRequest.Builder(context)
+                  .data(newImageUrl)
+                  .crossfade(true)
+                  .size(coil.size.Size.ORIGINAL)
+                  .build()
+          )
+          Box(
+              modifier = modifier.size(128.dp),
+              contentAlignment = Alignment.Center
+          ) {
+              when (imagePainter.state) {
+                  is AsyncImagePainter.State.Loading -> {
+                      Image(
+                          painter = painterResource(id = R.drawable.loading_img),
+                          contentDescription = stringResource(id = R.string.loading),
+                          modifier = Modifier.size(64.dp) // Adjust the size as needed
+                      )
+                  }
+                  is AsyncImagePainter.State.Error -> {
+                      Image(
+                          painter = painterResource(id = R.drawable.ic_broken_image),
+                          contentDescription = stringResource(id = R.string.loading_failed),
+                          modifier = Modifier.size(64.dp) // Adjust the size as needed
+                      )
+                  }
+                  else -> {
+                      AsyncImage(
+                          model = newImageUrl,
+                          contentDescription = stringResource(id = R.string.book_photo),
+                          modifier = Modifier.fillMaxSize(),
+                          contentScale = ContentScale.Crop
+                      )
+                  }
+              }
+          }
+
 
 
       }
@@ -290,7 +324,6 @@ fun BooksLabelCategories(
     buttonLabels: List<String>,
     onButtonClick: (String) -> Unit,
     modifier: Modifier = Modifier){
-
     LazyRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -319,7 +352,8 @@ fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(painter = painterResource(id = R.drawable.ic_connection_error),
-            contentDescription = stringResource(id = R.string.loading_failed))
+            contentDescription = stringResource(id = R.string.loading_failed),
+            modifier = Modifier.size(150.dp))
         Text(text = stringResource(id = errorMessage), textAlign = TextAlign.Center)
     }
 }
