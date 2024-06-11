@@ -84,7 +84,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     Box (modifier = modifier, contentAlignment = Alignment.Center){
         Image(
             modifier = Modifier.size(150.dp),
-            painter = painterResource(id = R.drawable.loading_img),
+            painter = painterResource(id = R.drawable.ic_loading),
             contentDescription = stringResource(id = R.string.loading),
         )
     }
@@ -225,7 +225,7 @@ fun BookCard(
               when (imagePainter.state) {
                   is AsyncImagePainter.State.Loading -> {
                       Image(
-                          painter = painterResource(id = R.drawable.loading_img),
+                          painter = painterResource(id = R.drawable.ic_loading),
                           contentDescription = stringResource(id = R.string.loading),
                           modifier = Modifier.size(64.dp) // Adjust the size as needed
                       )
@@ -311,7 +311,7 @@ fun BooksListImageItem(
                 .data(newImageUrl).build(),
             contentDescription = stringResource(id = R.string.book_photo),
             error = painterResource(id = R.drawable.ic_broken_image),
-            placeholder = painterResource(id = R.drawable.loading_img),
+            placeholder = painterResource(id = R.drawable.ic_loading),
             modifier = Modifier
                 .fillMaxSize()
         )
