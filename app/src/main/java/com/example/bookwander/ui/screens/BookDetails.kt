@@ -1,5 +1,7 @@
 package com.example.bookwander.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -16,17 +18,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -56,17 +64,39 @@ fun BookDetailsScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
     val uiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
+    val context = LocalContext.current
 
-   LazyColumn (
-       modifier = modifier
-           .fillMaxSize()
-           .padding(dimensionResource(id = R.dimen.padding_medium)),
-       contentPadding = contentPadding
-   ) {
-       item{
-           uiState.value.currentSelectedBook?.let { BookContent(book = it) }
-       }
-   }
+    Log.d("BOOK DETAILS", "${uiState.value.currentSelectedBook}")
+
+    Column (modifier = modifier.fillMaxSize()){
+        LazyColumn (
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_medium))
+                .weight(1f),
+            contentPadding = contentPadding
+        ) {
+            item{
+                uiState.value.currentSelectedBook?.let { BookContent(book = it) }
+            }
+        }
+            Button(onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                          data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink?.replace("https", "http"))
+                      }
+                    context.startActivity(intent)
+                 },
+                shape = RoundedCornerShape(0.dp),
+                enabled = if (uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty()) false else true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(id = R.dimen.padding_medium))
+
+            )
+            {
+                Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)
+            }
+    }
+
 }
 
 
@@ -88,7 +118,7 @@ fun BookContent(
     BookExtraDetails(
         modifier = Modifier
             .fillMaxWidth()
-            .size(100.dp),
+            .size(80.dp),
         book = book
     )
 
@@ -101,6 +131,7 @@ fun BookContent(
     )
 
     Text(text = book.volumeInfo.description,
+        style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Justify,
         modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)))
 
@@ -115,44 +146,46 @@ fun BookImageWithAuthor(
     val numberOfAuthors = book.volumeInfo.authors
     val formattedAuthors = formatAuthors(numberOfAuthors)
 
-    Card (
+    Column (
         modifier = modifier
             .wrapContentWidth()
             .padding(8.dp),
-        colors = CardDefaults.cardColors(Color.Transparent)
-    ) {
-        Column (
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-        ){
-            Box(modifier = Modifier.size(dimensionResource(id = R.dimen.book_details_card_size))){
-                val oldValue = "http"
-                val newValue = "https"
-                val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue,newValue)
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(newImageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = stringResource(id = R.string.book_photo),
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
 
-            Text(text = "By $formattedAuthors",
-                style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .width(200.dp)
-                    .padding(top = dimensionResource(id = R.dimen.padding_small)))
-            val formattedDate = formatDate(book.volumeInfo.publishedDate)
-            Text(text = formattedDate,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier)
+    ){
+        Card(modifier = Modifier
+            .width(120.dp)
+            .height(180.dp),
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        ){
+            val oldValue = "http"
+            val newValue = "https"
+            val newImageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace(oldValue,newValue)
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(newImageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = stringResource(id = R.string.book_photo),
+                modifier = Modifier.fillMaxSize(),
+            )
         }
-        }
+
+        Text(text = "By $formattedAuthors",
+            style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(200.dp)
+                .padding(top = dimensionResource(id = R.dimen.padding_small)))
+        val formattedDate = formatDate(book.volumeInfo.publishedDate)
+        Text(text = formattedDate,
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier)
+    }
+
 
 }
 
@@ -163,7 +196,7 @@ fun BookExtraDetails(
 ){
     Card (
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ){
         Row (
             modifier = Modifier
@@ -182,17 +215,19 @@ fun BookExtraDetails(
                 Icon(
                     painter = painterResource(id = R.drawable.published_icon),
                     contentDescription = stringResource(id = R.string.publisher_icon),
-                    modifier = Modifier.size(32.dp).padding(end = dimensionResource(id = R.dimen.padding_small))
+                    modifier = Modifier
+                        .size(32.dp)
+                        .padding(end = dimensionResource(id = R.dimen.padding_small))
                 )
                 Text(
                     buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
+                                fontSize = 16.sp
                             )
                         ) {
-                            append("${book.volumeInfo.publisher}")
+                            append(book.volumeInfo.publisher)
                         }
                     },
                 )
@@ -203,7 +238,11 @@ fun BookExtraDetails(
                 )
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp)
+                    ) {
                         append("${book.volumeInfo.pageCount}")
                     }
                     append(" pages")
@@ -232,3 +271,23 @@ fun formatDate(dateString: String): String{
 
 }
 
+
+
+@Composable
+fun FabAnywhere(
+    fabPosition: FabPosition,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Scaffold(
+        floatingActionButtonPosition = fabPosition,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onClick,
+                modifier = modifier,
+                content = content
+            )
+        }
+    ) {}
+}

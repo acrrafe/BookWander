@@ -11,5 +11,6 @@ data class VolumeInfo(
     val description: String = "",
     val categories: List<String> = emptyList(),
     val imageLinks: ImageLinks? = null, // making it nullable just in case of missing images
-    val pageCount: Int = 0
+    val pageCount: Int = 0,
+
 )

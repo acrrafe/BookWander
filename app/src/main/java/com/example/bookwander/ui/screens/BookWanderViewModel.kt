@@ -73,13 +73,10 @@ class BookWanderViewModel(private val bookshelfRepository: BookshelfRepository):
                 val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory).items
                 BookUiState.Success(booksTrending, booksCategory).also { newState->
                     bookUiState = newState
-
                     _bookCategoryUiState.update {
                         it.copy(currentSelectedBook = booksTrending.firstOrNull())
                     }
-
                 }
-
             } catch (e: IOException) {
                 BookUiState.Error(R.string.network_error)
             } catch (e: HttpException) {

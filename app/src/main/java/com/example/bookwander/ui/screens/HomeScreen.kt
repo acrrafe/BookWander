@@ -47,9 +47,9 @@ import com.example.bookwander.R
 import com.example.bookwander.model.Book
 
 /*
-* TODO: Apply proper layout and make the images clickable
+*  TODO: Apply proper layout and make the images clickable
 *  TODO: Find a good workaround in nested scrollable screen
-* TODO: Implement my design to all Screen Sizes
+*  TODO: Implement my design to all Screen Sizes
 *  TODO: Do unit testing
 *
 * */
@@ -285,7 +285,7 @@ fun BookCardWide(
                 book = book
             )
             Text(text = "By $formattedAuthors",
-                style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .width(200.dp)
