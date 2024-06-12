@@ -273,21 +273,3 @@ fun formatDate(dateString: String): String{
 
 
 
-@Composable
-fun FabAnywhere(
-    fabPosition: FabPosition,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Scaffold(
-        floatingActionButtonPosition = fabPosition,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onClick,
-                modifier = modifier,
-                content = content
-            )
-        }
-    ) {}
-}
