@@ -81,7 +81,7 @@ fun BookDetailsScreen(
         }
             Button(onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                          data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink?.replace("https", "http"))
+                          data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink)
                       }
                     context.startActivity(intent)
                  },
