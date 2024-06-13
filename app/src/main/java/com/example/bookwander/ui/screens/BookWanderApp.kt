@@ -17,6 +17,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.bookwander.R
+import com.example.bookwander.model.BookContentType
 import com.example.bookwander.model.Screen
 
 
@@ -38,6 +41,7 @@ import com.example.bookwander.model.Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookshelfApp(
+    windowSizeClass: WindowWidthSizeClass,
     navController: NavHostController = rememberNavController()
 ){
     // Initialize our back stack by collecting the currBackStackEntryAsState
@@ -46,56 +50,70 @@ fun BookshelfApp(
     val currScreen = Screen.valueOf(
         backStack?.destination?.route ?: Screen.Start.name
     )
+    val bookContentType: BookContentType = when(windowSizeClass){
+        WindowWidthSizeClass.Compact -> {
+            BookContentType.List
+        }
+        WindowWidthSizeClass.Medium -> {
+            BookContentType.List
+        }
+        WindowWidthSizeClass.Expanded -> {
+            BookContentType.ListAndDetails
+        }else -> BookContentType.List
+    }
 
-   MaterialTheme {
-       val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-       Scaffold (
-           modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-           topBar = { BookTopAppBar(
-               currentScreen = currScreen,
-               scrollBehavior = scrollBehavior,
-               canNavigateBack = navController.previousBackStackEntry != null,
-               onBack = { navController.popBackStack() }
-               ) }
-       ) {innerPadding ->
-           Surface (modifier = Modifier.fillMaxSize()){
-               /**
-                * Use the Factory that we created inside the viewModel
-                * The factory will ensure that our repository will be consider in the
-                * ViewModel constructor
-                * **/
-               val bookWanderViewModel: BookWanderViewModel =
-                   viewModel(factory = BookWanderViewModel.Factory)
+   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+   Scaffold (
+       modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+       topBar = { BookTopAppBar(
+           currentScreen = currScreen,
+           scrollBehavior = scrollBehavior,
+           canNavigateBack = navController.previousBackStackEntry != null,
+           onBack = { navController.popBackStack() }
+           ) }
+   ) {innerPadding ->
+       Surface (modifier = Modifier.fillMaxSize()){
+           /**
+            * Use the Factory that we created inside the viewModel
+            * The factory will ensure that our repository will be consider in the
+            * ViewModel constructor
+            * **/
+           val bookWanderViewModel: BookWanderViewModel =
+               viewModel(factory = BookWanderViewModel.Factory)
 
-               NavHost(
-                   navController = navController,
-                   startDestination = Screen.Start.name,
-                   modifier = Modifier
-               ){
-                   composable(route = Screen.Start.name){
-                       HomeScreen(
-                           bookViewModel = bookWanderViewModel,
-                           contentPadding = innerPadding,
-                           onClick = {
-                                     bookWanderViewModel.updateSelectedBook(it)
-                                     navController.navigate(Screen.Book.name)
-                           },
-                           modifier = Modifier
-                       )
-                   }
-                   composable(route = Screen.Book.name){
-                       BookDetailsScreen(
-                           bookWanderViewModel = bookWanderViewModel,
-                           contentPadding = innerPadding,
-                           modifier = Modifier)
-                   }
-
-
+           NavHost(
+               navController = navController,
+               startDestination = Screen.Start.name,
+               modifier = Modifier
+           ){
+               composable(route = Screen.Start.name){
+                   HomeScreen(
+                       bookContentType = bookContentType,
+                       bookViewModel = bookWanderViewModel,
+                       contentPadding = innerPadding,
+                       onClick = {
+                           if(bookContentType != BookContentType.ListAndDetails){
+                               bookWanderViewModel.updateSelectedBook(it)
+                               navController.navigate(Screen.Book.name)
+                           }else {
+                               bookWanderViewModel.updateSelectedBook(it)
+                           }
+                       },
+                       modifier = Modifier
+                   )
                }
+               composable(route = Screen.Book.name){
+                   BookDetailsScreen(
+                       bookWanderViewModel = bookWanderViewModel,
+                       contentPadding = innerPadding,
+                       modifier = Modifier)
+               }
+
+
            }
        }
-
    }
+
 
 }
 

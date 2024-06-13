@@ -1,5 +1,7 @@
 package com.example.bookwander.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -7,6 +9,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +49,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.bookwander.R
 import com.example.bookwander.model.Book
+import com.example.bookwander.model.BookContentType
 
 /*
 *  TODO: Apply proper layout and make the images clickable
@@ -54,8 +59,10 @@ import com.example.bookwander.model.Book
 *
 * */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
+    bookContentType: BookContentType,
     modifier: Modifier = Modifier,
     bookViewModel: BookWanderViewModel,
     onClick: (Book) -> Unit,
@@ -65,8 +72,9 @@ fun HomeScreen(
     when(val bookUiState = bookViewModel.bookUiState){
         is BookUiState.Loading -> LoadingScreen()
         is BookUiState.Success -> BooksListScreen(
-            bookUiState.books,
-            bookUiState.bookCategory,
+            booksTrend = bookUiState.books,
+            booksCategorize = bookUiState.bookCategory,
+            bookContentType = bookContentType,
             onClick = onClick,
             bookViewModel = bookViewModel,
             contentPadding = contentPadding,
@@ -91,29 +99,58 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BooksListScreen(
     booksTrend: List<Book>,
     booksCategorize: List<Book>,
+    bookContentType: BookContentType,
     onClick: (Book) -> Unit,
     bookViewModel: BookWanderViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ){
-    LazyColumn (
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        contentPadding = contentPadding
-    ) {
-        item{
-            BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
+    if(bookContentType != BookContentType.ListAndDetails){
+        LazyColumn (
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            contentPadding = contentPadding
+        ) {
+            item{
+                BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
+            }
+            item{
+                BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
+            }
         }
-        item{
-            BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
-        }
+    }else{
+        Row(){
+            LazyColumn (
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .weight(1f),
+                contentPadding = contentPadding
+            ) {
+                item{
+                    BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
+                }
+                item{
+                    BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
+                }
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            BookDetailsScreen(
+                bookWanderViewModel = bookViewModel,
+                contentPadding = contentPadding,
+                modifier = Modifier.weight(1f)
+            )
 
+
+        }
     }
+
 
 }
 

@@ -64,6 +64,8 @@ dependencies {
     // Lifecycle and View Model
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    // Window Size Class
+    implementation("androidx.compose.material3:material3-window-size-class")
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
