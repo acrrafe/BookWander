@@ -68,7 +68,7 @@ fun BookDetailsScreen(
         LazyColumn (
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding_medium))
-                .weight(1f),
+                .weight(1f, fill = false),
             contentPadding = contentPadding
         ) {
             item{
@@ -85,10 +85,7 @@ fun BookDetailsScreen(
                 enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.25f)
                     .padding(dimensionResource(id = R.dimen.padding_medium)),
-                contentPadding = contentPadding
-
             )
             {
                 Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)

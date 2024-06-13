@@ -72,18 +72,17 @@ fun HomeScreen(
     when(val bookUiState = bookViewModel.bookUiState){
         is BookUiState.Loading -> LoadingScreen()
         is BookUiState.Success -> BooksListScreen(
+            bookViewModel = bookViewModel,
             booksTrend = bookUiState.books,
             booksCategorize = bookUiState.bookCategory,
             bookContentType = bookContentType,
             onClick = onClick,
-            bookViewModel = bookViewModel,
             contentPadding = contentPadding,
             modifier = modifier.fillMaxSize()
         )
         is BookUiState.Error -> ErrorScreen(
             errorMessage = bookUiState.message,
             modifier = modifier.fillMaxSize())
-
     }
 
 }
@@ -96,7 +95,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
             contentDescription = stringResource(id = R.string.loading),
         )
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -125,7 +123,14 @@ fun BooksListScreen(
             }
         }
     }else{
-        Row(){
+        Row(modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensionResource(id = R.dimen.padding_medium),
+                top = dimensionResource(id = R.dimen.padding_medium),
+                end = dimensionResource(id = R.dimen.padding_medium)
+            )
+        ){
             LazyColumn (
                 modifier = modifier
                     .fillMaxSize()
@@ -146,12 +151,8 @@ fun BooksListScreen(
                 contentPadding = contentPadding,
                 modifier = Modifier.weight(1f)
             )
-
-
         }
     }
-
-
 }
 
 
