@@ -66,7 +66,7 @@ fun BookDetailsScreen(
     val uiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
     val context = LocalContext.current
 
-    Log.d("BOOK DETAILS", "${uiState.value.currentSelectedBook}")
+    // Log.d("BOOK DETAILS", "${uiState.value.currentSelectedBook}")
 
     Column (modifier = modifier.fillMaxSize()){
         LazyColumn (
@@ -86,7 +86,7 @@ fun BookDetailsScreen(
                     context.startActivity(intent)
                  },
                 shape = RoundedCornerShape(0.dp),
-                enabled = if (uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty()) false else true,
+                enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(id = R.dimen.padding_medium))
@@ -265,7 +265,7 @@ fun formatDate(dateString: String): String{
         val date = LocalDate.parse(dateString, inputFormatter)
         date.format(outputFormatter)
     }catch (e: DateTimeParseException){
-        Log.e("BOOKDETAILS", "Invalid Date Format: $dateString", e)
+        Log.d("BOOK DETAILS", "Invalid Date Format: $dateString", e)
         if(!dateString.isEmpty()) dateString else "Invalid Date"
     }
 
