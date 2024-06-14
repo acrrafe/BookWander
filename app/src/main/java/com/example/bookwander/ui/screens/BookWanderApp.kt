@@ -103,10 +103,14 @@ fun BookshelfApp(
                    )
                }
                composable(route = Screen.Book.name){
-                   BookDetailsScreen(
-                       bookWanderViewModel = bookWanderViewModel,
-                       contentPadding = innerPadding,
-                       modifier = Modifier)
+                   if(bookContentType != BookContentType.ListAndDetails){
+                       BookDetailsScreen(
+                           bookWanderViewModel = bookWanderViewModel,
+                           contentPadding = innerPadding,
+                           modifier = Modifier)
+                   }else{
+                       navController.navigate(Screen.Start.name)
+                   }
                }
 
 

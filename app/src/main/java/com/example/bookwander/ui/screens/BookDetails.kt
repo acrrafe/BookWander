@@ -51,7 +51,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Locale
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BookDetailsScreen(
@@ -61,35 +60,37 @@ fun BookDetailsScreen(
 ){
     val uiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
     val context = LocalContext.current
-
     // Log.d("BOOK DETAILS", "${uiState.value.currentSelectedBook}")
-
     Column (modifier = modifier.fillMaxSize()){
         LazyColumn (
             modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_medium))
-                .weight(1f, fill = false),
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_medium)),
             contentPadding = contentPadding
         ) {
             item{
                 uiState.value.currentSelectedBook?.let { BookContent(book = it) }
             }
-        }
-            Button(onClick = {
+
+            item{
+                Button(onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                          data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink)
-                      }
+                        data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink)
+                    }
                     context.startActivity(intent)
-                 },
-                shape = RoundedCornerShape(0.dp),
-                enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.padding_medium)),
-            )
-            {
-                Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)
+                },
+                    shape = RoundedCornerShape(0.dp),
+                    enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(id = R.dimen.padding_medium)),
+                )
+                {
+                    Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)
+                }
             }
+        }
+
     }
 
 }
