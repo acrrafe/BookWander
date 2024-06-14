@@ -65,7 +65,7 @@ fun BookDetailsScreen(
         LazyColumn (
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding_medium))
-                .weight(1f, fill = false),
+                .weight(1f),
             contentPadding = contentPadding
         ) {
             item{
