@@ -64,33 +64,35 @@ fun BookDetailsScreen(
     Column (modifier = modifier.fillMaxSize()){
         LazyColumn (
             modifier = Modifier
-                .fillMaxSize()
-                .padding(dimensionResource(id = R.dimen.padding_medium)),
+                .padding(dimensionResource(id = R.dimen.padding_medium))
+                .weight(1f, fill = false),
             contentPadding = contentPadding
         ) {
             item{
                 uiState.value.currentSelectedBook?.let { BookContent(book = it) }
             }
-
-            item{
-                Button(onClick = {
+        }
+            Button(
+                onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink)
                     }
                     context.startActivity(intent)
                 },
-                    shape = RoundedCornerShape(0.dp),
-                    enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.padding_medium)),
-                )
-                {
-                    Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)
-                }
+                shape = RoundedCornerShape(0.dp),
+                enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(120.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.padding_medium),
+                        end = dimensionResource(id = R.dimen.padding_medium),
+                        bottom = 50.dp
+                    ),
+            )
+            {
+                Text("Get on Google Play", style = MaterialTheme.typography.bodyLarge)
             }
-        }
-
     }
 
 }
