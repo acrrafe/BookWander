@@ -64,19 +64,22 @@ import com.example.bookwander.model.BookContentType
 fun HomeScreen(
     bookContentType: BookContentType,
     modifier: Modifier = Modifier,
-    bookViewModel: BookWanderViewModel,
+    bookUiState: BookUiState,
+    bookCategoryUiState: BookCategoryUiState,
     onClick: (Book) -> Unit,
+    onBookCategoryClick: (String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
 
-    when(val bookUiState = bookViewModel.bookUiState){
+    when(bookUiState){
         is BookUiState.Loading -> LoadingScreen()
         is BookUiState.Success -> BooksListScreen(
-            bookViewModel = bookViewModel,
+            bookCategoryUiState = bookCategoryUiState,
             booksTrend = bookUiState.books,
             booksCategorize = bookUiState.bookCategory,
             bookContentType = bookContentType,
             onClick = onClick,
+            onBookCategoryClick = onBookCategoryClick,
             contentPadding = contentPadding,
             modifier = modifier.fillMaxSize()
         )
@@ -103,8 +106,9 @@ fun BooksListScreen(
     booksTrend: List<Book>,
     booksCategorize: List<Book>,
     bookContentType: BookContentType,
+    bookCategoryUiState: BookCategoryUiState,
     onClick: (Book) -> Unit,
-    bookViewModel: BookWanderViewModel,
+    onBookCategoryClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ){
@@ -119,7 +123,7 @@ fun BooksListScreen(
                 BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
             }
             item{
-                BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
+                BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = booksCategorize, modifier = modifier)
             }
         }
     }else{
@@ -142,12 +146,12 @@ fun BooksListScreen(
                     BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
                 }
                 item{
-                    BookCategoryList(onClick = onClick, bookViewModel = bookViewModel, books = booksCategorize, modifier = modifier)
+                    BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = booksCategorize, modifier = modifier)
                 }
             }
             Spacer(modifier = Modifier.width(30.dp))
             BookDetailsScreen(
-                bookWanderViewModel = bookViewModel,
+                bookCategoryUiState = bookCategoryUiState,
                 contentPadding = contentPadding,
                 modifier = Modifier.weight(1f)
             )
@@ -191,9 +195,11 @@ fun BookTrendList(
 
 @Composable
 fun BookCategoryList(
-    bookViewModel: BookWanderViewModel,
-    books: List<Book>, modifier: Modifier,
+    books: List<Book>,
+    modifier: Modifier = Modifier,
     onClick: (Book) -> Unit,
+    onBookCategoryClick: (String) -> Unit
+
 ) {
     Column (
         modifier = modifier.padding(top = 24.dp)
@@ -206,10 +212,7 @@ fun BookCategoryList(
         )
         val bookLabels = listOf("E-book", "Fiction", "Money", "Skills", "War")
         BooksLabelCategories(buttonLabels = bookLabels,
-            onButtonClick = {
-                bookViewModel.updateBookCategory(it)
-                bookViewModel.getBookCategory(it)
-                            }, 
+            onButtonClick = onBookCategoryClick,
             modifier = Modifier
                 .padding(vertical = dimensionResource(id = R.dimen.padding_small))
         )

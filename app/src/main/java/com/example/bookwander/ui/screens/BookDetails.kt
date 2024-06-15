@@ -54,11 +54,10 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BookDetailsScreen(
-    bookWanderViewModel: BookWanderViewModel,
+    bookCategoryUiState: BookCategoryUiState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
-    val uiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
     val context = LocalContext.current
     // Log.d("BOOK DETAILS", "${uiState.value.currentSelectedBook}")
     Column (modifier = modifier.fillMaxSize()){
@@ -69,18 +68,18 @@ fun BookDetailsScreen(
             contentPadding = contentPadding
         ) {
             item{
-                uiState.value.currentSelectedBook?.let { BookContent(book = it) }
+                bookCategoryUiState.currentSelectedBook?.let { BookContent(book = it) }
             }
         }
             Button(
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse(uiState.value.currentSelectedBook?.saleInfo?.buyLink)
+                        data = Uri.parse(bookCategoryUiState.currentSelectedBook?.saleInfo?.buyLink)
                     }
                     context.startActivity(intent)
                 },
                 shape = RoundedCornerShape(0.dp),
-                enabled = !uiState.value.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
+                enabled = !bookCategoryUiState.currentSelectedBook?.saleInfo?.buyLink.isNullOrEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(120.dp)

@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -81,6 +82,8 @@ fun BookshelfApp(
            val bookWanderViewModel: BookWanderViewModel =
                viewModel(factory = BookWanderViewModel.Factory)
 
+           val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
+
            NavHost(
                navController = navController,
                startDestination = Screen.Start.name,
@@ -89,8 +92,9 @@ fun BookshelfApp(
                composable(route = Screen.Start.name){
                    HomeScreen(
                        bookContentType = bookContentType,
-                       bookViewModel = bookWanderViewModel,
                        contentPadding = innerPadding,
+                       bookUiState = bookWanderViewModel.bookUiState,
+                       bookCategoryUiState = bookCategoryUiState.value,
                        onClick = {
                            if(bookContentType != BookContentType.ListAndDetails){
                                bookWanderViewModel.updateSelectedBook(it)
@@ -99,13 +103,17 @@ fun BookshelfApp(
                                bookWanderViewModel.updateSelectedBook(it)
                            }
                        },
+                       onBookCategoryClick = {
+                           bookWanderViewModel.updateBookCategory(it)
+                           bookWanderViewModel.getBookCategory(it)
+                       },
                        modifier = Modifier
                    )
                }
                composable(route = Screen.Book.name){
                    if(bookContentType != BookContentType.ListAndDetails){
                        BookDetailsScreen(
-                           bookWanderViewModel = bookWanderViewModel,
+                           bookCategoryUiState = bookCategoryUiState.value,
                            contentPadding = innerPadding,
                            modifier = Modifier)
                    }else{
