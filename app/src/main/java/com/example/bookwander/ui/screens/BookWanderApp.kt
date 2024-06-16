@@ -71,7 +71,7 @@ fun BookshelfApp(
            currentScreen = currScreen,
            scrollBehavior = scrollBehavior,
            canNavigateBack = navController.previousBackStackEntry != null,
-           onBack = { navController.popBackStack() }
+           onBack = { navController.navigateUp() }
            ) }
    ) {innerPadding ->
        Surface (modifier = Modifier.fillMaxSize()){
