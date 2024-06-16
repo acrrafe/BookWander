@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -82,7 +83,7 @@ fun BookshelfApp(
            val bookWanderViewModel: BookWanderViewModel =
                viewModel(factory = BookWanderViewModel.Factory)
 
-           val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsState()
+           val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsStateWithLifecycle().value
 
            NavHost(
                navController = navController,
@@ -94,7 +95,7 @@ fun BookshelfApp(
                        bookContentType = bookContentType,
                        contentPadding = innerPadding,
                        bookUiState = bookWanderViewModel.bookUiState,
-                       bookCategoryUiState = bookCategoryUiState.value,
+                       bookCategoryUiState = bookCategoryUiState,
                        onClick = {
                            if(bookContentType != BookContentType.ListAndDetails){
                                bookWanderViewModel.updateSelectedBook(it)
@@ -113,7 +114,7 @@ fun BookshelfApp(
                composable(route = Screen.Book.name){
                    if(bookContentType != BookContentType.ListAndDetails){
                        BookDetailsScreen(
-                           bookCategoryUiState = bookCategoryUiState.value,
+                           bookCategoryUiState = bookCategoryUiState,
                            contentPadding = innerPadding,
                            modifier = Modifier)
                    }else{
