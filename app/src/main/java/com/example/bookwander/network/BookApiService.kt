@@ -26,8 +26,8 @@ interface BookApiService {
     @GET("volumes?")
     suspend fun searchBook(@Query("q") userQuery:String): Items
 
-    @GET("volumes/{volumeId}")
-    suspend fun getBookDetail(@Query("volumeId") bookId:String): Book
+//    @GET("volumes/{volumeId}")
+//    suspend fun getBookDetail(@Query("volumeId") bookId:String): Book
 }
 
 //object BookApi{
