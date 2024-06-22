@@ -65,7 +65,7 @@ class BookWanderViewModel(private val bookshelfRepository: BookshelfRepository):
     }
 
 
-    private fun getBooksInformation() {
+    fun getBooksInformation() {
         viewModelScope.launch{
             bookUiState = BookUiState.Loading
             bookUiState = try {

@@ -6,6 +6,16 @@ import com.example.bookwander.model.Items
 
 class FakeBookWanderRepository: BookshelfRepository {
     override suspend fun searchBook(userQuery: String): Items {
-        return FakeDataSources.fakeBooks
+        return when (userQuery) {
+            "Trending" -> {
+                FakeDataSources.fakeBooksTrending
+            }
+            "Entrepreneur" -> {
+                FakeDataSources.fakeBooksCategory
+            }
+            else -> {
+                Items(emptyList())
+            }
+        }
     }
 }

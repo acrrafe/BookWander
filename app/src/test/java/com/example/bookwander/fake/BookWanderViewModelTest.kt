@@ -18,6 +18,10 @@ class BookWanderViewModelTest {
             val bookWanderViewModel = BookWanderViewModel(
                 bookshelfRepository = FakeBookWanderRepository()
             )
-            assertEquals(BookUiState.Success(FakeDataSources.fakeBooks.items, FakeDataSources.fakeBooks.items), bookWanderViewModel.bookUiState)
+            // Run the init block in our viewModel
+            bookWanderViewModel.getBooksInformation()
+            // Test the value
+            assertEquals(BookUiState.Success(FakeDataSources.fakeBooksTrending.items,
+                FakeDataSources.fakeBooksCategory.items), bookWanderViewModel.bookUiState)
         }
 }
