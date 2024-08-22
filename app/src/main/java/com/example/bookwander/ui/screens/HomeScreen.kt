@@ -48,8 +48,10 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.bookwander.R
-import com.example.bookwander.model.Book
+import com.example.bookwander.model.json.Book
 import com.example.bookwander.model.BookContentType
+import com.example.bookwander.presentation.BookCategoryUiState
+import com.example.bookwander.presentation.BookUiState
 
 /*
 *  TODO: Apply proper layout and make the images clickable

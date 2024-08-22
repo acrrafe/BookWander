@@ -1,6 +1,6 @@
 package com.example.bookwander.domain.repository
 
-import com.example.bookwander.model.Items
+import com.example.bookwander.model.json.Items
 
 // Abstraction of searchBook Function
 interface BookWanderRepository {

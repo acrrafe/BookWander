@@ -1,10 +1,10 @@
 package com.example.bookwander.fake
 
-import com.example.bookwander.model.Book
-import com.example.bookwander.model.ImageLinks
-import com.example.bookwander.model.Items
-import com.example.bookwander.model.SaleInfo
-import com.example.bookwander.model.VolumeInfo
+import com.example.bookwander.model.json.Book
+import com.example.bookwander.model.json.ImageLinks
+import com.example.bookwander.model.json.Items
+import com.example.bookwander.model.json.SaleInfo
+import com.example.bookwander.model.json.VolumeInfo
 
 object FakeDataSources {
 

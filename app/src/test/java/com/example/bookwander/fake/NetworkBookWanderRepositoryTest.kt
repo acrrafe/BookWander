@@ -1,7 +1,7 @@
 package com.example.bookwander.fake
 
 import com.example.bookwander.data.repository.BookWanderRepositoryImpl
-import com.example.bookwander.model.Items
+import com.example.bookwander.model.json.Items
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals

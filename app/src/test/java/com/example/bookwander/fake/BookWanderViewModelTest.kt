@@ -1,8 +1,8 @@
 package com.example.bookwander.fake
 
 import com.example.bookwander.rules.TestDispatcherRule
-import com.example.bookwander.ui.screens.BookUiState
-import com.example.bookwander.ui.screens.BookWanderViewModel
+import com.example.bookwander.presentation.BookUiState
+import com.example.bookwander.presentation.BookWanderViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -21,7 +21,8 @@ class BookWanderViewModelTest {
             // Run the init block in our viewModel
             bookWanderViewModel.getBooksInformation()
             // Test the value
-            assertEquals(BookUiState.Success(FakeDataSources.fakeBooksTrending.items,
+            assertEquals(
+                BookUiState.Success(FakeDataSources.fakeBooksTrending.items,
                 FakeDataSources.fakeBooksCategory.items), bookWanderViewModel.bookUiState)
         }
 }

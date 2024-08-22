@@ -1,4 +1,4 @@
-package com.example.bookwander.ui.screens
+package com.example.bookwander.presentation
 
 import androidx.annotation.StringRes
 import retrofit2.HttpException
@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookwander.R
 import com.example.bookwander.domain.repository.BookWanderRepository
-import com.example.bookwander.model.Book
+import com.example.bookwander.model.json.Book
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

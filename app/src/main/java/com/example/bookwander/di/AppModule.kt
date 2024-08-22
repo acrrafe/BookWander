@@ -2,7 +2,7 @@ package com.example.bookwander.di
 
 import com.example.bookwander.data.repository.BookWanderRepositoryImpl
 import com.example.bookwander.domain.repository.BookWanderRepository
-import com.example.bookwander.network.BookApiService
+import com.example.bookwander.data.remote.BookApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
