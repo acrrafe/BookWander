@@ -1,4 +1,4 @@
-package com.example.bookwander.application
+package com.example.bookwander.BookWanderApplication
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

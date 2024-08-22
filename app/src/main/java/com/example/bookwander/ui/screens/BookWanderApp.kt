@@ -61,12 +61,13 @@ fun BookshelfApp(
     }
 
    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+   val currentBackStackEntry by navController.currentBackStackEntryAsState()
    Scaffold (
        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
        topBar = { BookTopAppBar(
            currentScreen = currScreen,
            scrollBehavior = scrollBehavior,
-           canNavigateBack = navController.previousBackStackEntry != null,
+           canNavigateBack = currentBackStackEntry?.destination?.route != Screen.Start.name,
            onBack = { navController.navigateUp() }
            ) }
    ) {innerPadding ->
@@ -152,7 +153,7 @@ fun BookTopAppBar(
 //        ),
         navigationIcon = {
             if(canNavigateBack){
-                IconButton(onClick = onBack ) {
+                IconButton(onClick = onBack) {
                     Icon(imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = MaterialTheme.colorScheme.primary)
