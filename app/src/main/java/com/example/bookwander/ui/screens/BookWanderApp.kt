@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -80,8 +81,7 @@ fun BookshelfApp(
             * The factory will ensure that our repository will be consider in the
             * ViewModel constructor
             * **/
-           val bookWanderViewModel: BookWanderViewModel =
-               viewModel(factory = BookWanderViewModel.Factory)
+           val bookWanderViewModel = hiltViewModel<BookWanderViewModel>()
 
            val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsStateWithLifecycle().value
 

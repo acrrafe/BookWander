@@ -1,6 +1,6 @@
 package com.example.bookwander.fake
 
-import com.example.bookwander.data.NetworkBookshelfRepository
+import com.example.bookwander.data.repository.BookWanderRepositoryImpl
 import com.example.bookwander.model.Items
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -11,7 +11,7 @@ class NetworkBookWanderRepositoryTest {
     @Test
     fun networkBookWanderRepository_getBooks_verifyBookList() =
         runTest {
-            val repository = NetworkBookshelfRepository(
+            val repository = BookWanderRepositoryImpl(
                 bookApiService = FakeBookWanderApiService()
             )
             // Success Tests

@@ -86,6 +86,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:dagger-compiler:2.48.1")
     ksp("com.google.dagger:hilt-android-compiler:2.48.1")
     //Room

@@ -6,28 +6,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.bookwander.BookWanderApplication.BookWanderApplication
 import com.example.bookwander.R
-import com.example.bookwander.data.BookshelfRepository
+import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.model.Book
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-
 import kotlinx.coroutines.launch
-
 import java.io.IOException
-
-/**
- *  TODO Figure out how to play with the values we need to pass to change the category of books in MVVM
- *  TODO Study how sealed interface works with UiState in ViewModel
- */
-
+import javax.inject.Inject
 
 // Fetching Data from the server's state
 sealed interface BookUiState{
@@ -42,7 +31,10 @@ data class BookCategoryUiState(
     val currentBookCategory: String
 )
 
-class BookWanderViewModel(private val bookshelfRepository: BookshelfRepository): ViewModel(){
+@HiltViewModel
+class BookWanderViewModel @Inject constructor(
+    private val bookshelfRepository: BookWanderRepository
+): ViewModel(){
 
     var bookUiState: BookUiState by mutableStateOf(BookUiState.Loading)
 
@@ -116,14 +108,5 @@ class BookWanderViewModel(private val bookshelfRepository: BookshelfRepository):
     companion object{
         private const val DEFAULT_CATEGORY = "Entrepreneur"
         private const val TRENDING_CATEGORY = "Trending"
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application =(this[APPLICATION_KEY] as BookWanderApplication)
-                val bookshelfRepository = application.container.bookshelfRepository
-                BookWanderViewModel(bookshelfRepository = bookshelfRepository)
-            }
-        }
     }
-
-
 }
