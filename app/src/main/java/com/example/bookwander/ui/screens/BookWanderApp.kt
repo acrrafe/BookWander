@@ -5,10 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,26 +15,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bookwander.R
 import com.example.bookwander.model.BookContentType
 import com.example.bookwander.model.Screen
+import com.example.bookwander.presentation.BookWanderViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -65,12 +61,13 @@ fun BookshelfApp(
     }
 
    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+   val currentBackStackEntry by navController.currentBackStackEntryAsState()
    Scaffold (
        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
        topBar = { BookTopAppBar(
            currentScreen = currScreen,
            scrollBehavior = scrollBehavior,
-           canNavigateBack = navController.previousBackStackEntry != null,
+           canNavigateBack = currentBackStackEntry?.destination?.route != Screen.Start.name,
            onBack = { navController.navigateUp() }
            ) }
    ) {innerPadding ->
@@ -80,8 +77,7 @@ fun BookshelfApp(
             * The factory will ensure that our repository will be consider in the
             * ViewModel constructor
             * **/
-           val bookWanderViewModel: BookWanderViewModel =
-               viewModel(factory = BookWanderViewModel.Factory)
+           val bookWanderViewModel = hiltViewModel<BookWanderViewModel>()
 
            val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsStateWithLifecycle().value
 
@@ -157,7 +153,7 @@ fun BookTopAppBar(
 //        ),
         navigationIcon = {
             if(canNavigateBack){
-                IconButton(onClick = onBack ) {
+                IconButton(onClick = onBack) {
                     Icon(imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = MaterialTheme.colorScheme.primary)

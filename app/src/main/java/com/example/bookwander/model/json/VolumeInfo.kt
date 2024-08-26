@@ -1,4 +1,4 @@
-package com.example.bookwander.model
+package com.example.bookwander.model.json
 
 import kotlinx.serialization.Serializable
 
@@ -13,4 +13,4 @@ data class VolumeInfo(
     val imageLinks: ImageLinks? = null, // making it nullable just in case of missing images
     val pageCount: Int = 0,
 
-)
+    )

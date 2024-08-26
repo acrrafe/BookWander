@@ -1,7 +1,7 @@
 package com.example.bookwander.fake
 
 import com.example.bookwander.data.BookshelfRepository
-import com.example.bookwander.model.Items
+import com.example.bookwander.model.json.Items
 
 
 class FakeBookWanderRepository: BookshelfRepository {

@@ -1,4 +1,4 @@
-package com.example.bookwander.model
+package com.example.bookwander.model.json
 
 import kotlinx.serialization.Serializable
 

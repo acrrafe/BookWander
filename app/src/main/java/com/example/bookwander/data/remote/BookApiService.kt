@@ -1,7 +1,6 @@
-package com.example.bookwander.network
+package com.example.bookwander.data.remote
 
-import com.example.bookwander.model.Book
-import com.example.bookwander.model.Items
+import com.example.bookwander.model.json.Items
 import retrofit2.http.GET
 import retrofit2.http.Query
 
