@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bookwander.model.BookContentType
 import com.example.bookwander.model.Screen
 import com.example.bookwander.presentation.BookWanderViewModel
@@ -80,6 +81,7 @@ fun BookshelfApp(
            val bookWanderViewModel = hiltViewModel<BookWanderViewModel>()
 
            val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsStateWithLifecycle().value
+           val bookTrendingFlow = bookWanderViewModel.bookTrendingFlow.collectAsLazyPagingItems()
 
            NavHost(
                navController = navController,
@@ -92,6 +94,7 @@ fun BookshelfApp(
                        contentPadding = innerPadding,
                        bookUiState = bookWanderViewModel.bookUiState,
                        bookCategoryUiState = bookCategoryUiState,
+                       bookTrendingFlow = bookTrendingFlow,
                        onClick = {
                            if(bookContentType != BookContentType.ListAndDetails){
                                bookWanderViewModel.updateSelectedBook(it)

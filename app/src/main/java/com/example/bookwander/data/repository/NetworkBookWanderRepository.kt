@@ -9,5 +9,9 @@ import com.example.bookwander.data.remote.BookApiService
 class BookWanderRepositoryImpl (
     private val bookApiService: BookApiService
 ): BookWanderRepository {
-    override suspend fun searchBook(userQuery: String): Items = bookApiService.searchBook(userQuery)
+    override suspend fun searchBook(
+        userQuery: String,
+        startIndex: Int,
+        maxResults: Int,
+    ): Items = bookApiService.searchBook(userQuery, startIndex, maxResults)
 }

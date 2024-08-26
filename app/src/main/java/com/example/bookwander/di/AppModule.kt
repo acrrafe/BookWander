@@ -50,4 +50,7 @@ object AppModule {
     fun provideBookWanderRepository(bookApiService: BookApiService): BookWanderRepository {
         return BookWanderRepositoryImpl(bookApiService)
     }
+
+    @Provides
+    fun maxResults(): Int = 30
 }

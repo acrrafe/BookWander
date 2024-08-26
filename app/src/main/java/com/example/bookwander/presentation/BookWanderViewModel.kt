@@ -7,10 +7,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.bookwander.R
+import com.example.bookwander.data.remote.BookPagingSource
 import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.model.json.Book
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -33,6 +39,7 @@ data class BookCategoryUiState(
 
 @HiltViewModel
 class BookWanderViewModel @Inject constructor(
+    private val  bookPagingSource: BookPagingSource,
     private val bookshelfRepository: BookWanderRepository
 ): ViewModel(){
 
@@ -51,6 +58,14 @@ class BookWanderViewModel @Inject constructor(
      */
     private var booksTrending = emptyList<Book>()
 
+    val bookTrendingFlow: Flow<PagingData<Book>> = Pager(
+        config = PagingConfig(
+            pageSize = 10,
+            enablePlaceholders = true
+        ),
+        pagingSourceFactory = { bookPagingSource }
+    ).flow.cachedIn(viewModelScope)
+
     // Initialize the function of getting the information of the books
     init{
         getBooksInformation()
@@ -61,8 +76,8 @@ class BookWanderViewModel @Inject constructor(
         viewModelScope.launch{
             bookUiState = BookUiState.Loading
             bookUiState = try {
-                booksTrending = bookshelfRepository.searchBook(TRENDING_CATEGORY).items
-                val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory).items
+                booksTrending = bookshelfRepository.searchBook(TRENDING_CATEGORY, 0, 10).items
+                val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory, 0,10).items
                 BookUiState.Success(booksTrending, booksCategory).also { newState->
                     bookUiState = newState
                     _bookCategoryUiState.update {
@@ -95,7 +110,7 @@ class BookWanderViewModel @Inject constructor(
         viewModelScope.launch {
             bookUiState = BookUiState.Loading
             bookUiState = try {
-                val booksCategory = bookshelfRepository.searchBook(currentBookCategory).items
+                val booksCategory = bookshelfRepository.searchBook(currentBookCategory, 0, 10).items
                 BookUiState.Success(booksTrending, booksCategory)
             }catch (e: IOException){
                 BookUiState.Error(R.string.network_error)

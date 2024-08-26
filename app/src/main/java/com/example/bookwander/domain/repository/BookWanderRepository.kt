@@ -4,5 +4,9 @@ import com.example.bookwander.model.json.Items
 
 // Abstraction of searchBook Function
 interface BookWanderRepository {
-    suspend fun searchBook(userQuery: String): Items
+    suspend fun searchBook(
+        userQuery: String,
+        startIndex: Int,
+        maxResults: Int
+    ): Items
 }

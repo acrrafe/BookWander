@@ -43,6 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
@@ -67,6 +70,7 @@ fun HomeScreen(
     bookContentType: BookContentType,
     modifier: Modifier = Modifier,
     bookUiState: BookUiState,
+    bookTrendingFlow: LazyPagingItems<Book>,
     bookCategoryUiState: BookCategoryUiState,
     onClick: (Book) -> Unit,
     onBookCategoryClick: (String) -> Unit,
@@ -77,7 +81,7 @@ fun HomeScreen(
         is BookUiState.Loading -> LoadingScreen()
         is BookUiState.Success -> BooksListScreen(
             bookCategoryUiState = bookCategoryUiState,
-            booksTrend = bookUiState.books,
+            booksTrend = bookTrendingFlow,
             booksCategorize = bookUiState.bookCategory,
             bookContentType = bookContentType,
             onClick = onClick,
@@ -105,7 +109,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BooksListScreen(
-    booksTrend: List<Book>,
+    booksTrend: LazyPagingItems<Book>,
     booksCategorize: List<Book>,
     bookContentType: BookContentType,
     bookCategoryUiState: BookCategoryUiState,
@@ -164,7 +168,7 @@ fun BooksListScreen(
 
 @Composable
 fun BookTrendList(
-    books: List<Book>,
+    books: LazyPagingItems<Book>,
     modifier: Modifier = Modifier,
     onClick: (Book) -> Unit,
 ) {
@@ -181,9 +185,13 @@ fun BookTrendList(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(items = books, key = { book -> book.id }) { book ->
+            items(
+                books.itemCount,
+                key = books.itemKey { it.id },
+            ) { book ->
+                val item = books[book]
                 BookCard(
-                    book = book,
+                    book = item!!,
                     modifier = Modifier
                         .height(dimensionResource(id = R.dimen.book_trending_card_size))
                         .aspectRatio(0.8f),

@@ -23,7 +23,11 @@ import retrofit2.http.Query
 
 interface BookApiService {
     @GET("volumes?")
-    suspend fun searchBook(@Query("q") userQuery:String): Items
+    suspend fun searchBook(
+        @Query("q") userQuery:String,
+        @Query("startIndex") startIndex: Int,
+        @Query("maxResults") maxResult: Int
+    ): Items
 
 //    @GET("volumes/{volumeId}")
 //    suspend fun getBookDetail(@Query("volumeId") bookId:String): Book
