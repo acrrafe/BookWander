@@ -91,6 +91,9 @@ dependencies {
     ksp("com.google.dagger:hilt-android-compiler:2.48.1")
     //Room
     // ksp("androidx.room:room-compiler:2.6.0")
+    // Paging 3
+    implementation("androidx.paging:paging-runtime-ktx:3.3.2")
+    implementation("androidx.paging:paging-compose:3.3.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
