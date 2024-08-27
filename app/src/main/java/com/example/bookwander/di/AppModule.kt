@@ -52,5 +52,5 @@ object AppModule {
     }
 
     @Provides
-    fun maxResults(): Int = 30
+    fun maxResults(): Int = 40
 }

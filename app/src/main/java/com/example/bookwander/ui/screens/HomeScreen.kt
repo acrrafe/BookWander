@@ -189,14 +189,16 @@ fun BookTrendList(
                 books.itemCount,
                 key = books.itemKey { it.id },
             ) { book ->
-                val item = books[book]
-                BookCard(
-                    book = item!!,
-                    modifier = Modifier
-                        .height(dimensionResource(id = R.dimen.book_trending_card_size))
-                        .aspectRatio(0.8f),
-                    onClick = onClick
-                )
+                book.let {
+                    val item = books[book]
+                    BookCard(
+                        book = item!!,
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.book_trending_card_size))
+                            .aspectRatio(0.8f),
+                        onClick = onClick
+                    )
+                }
             }
         }
     }

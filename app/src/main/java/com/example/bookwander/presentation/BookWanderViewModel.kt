@@ -76,8 +76,8 @@ class BookWanderViewModel @Inject constructor(
         viewModelScope.launch{
             bookUiState = BookUiState.Loading
             bookUiState = try {
-                booksTrending = bookshelfRepository.searchBook(TRENDING_CATEGORY, 0, 10).items
-                val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory, 0,10).items
+                booksTrending = bookshelfRepository.searchBook(TRENDING_CATEGORY, 0, 40).items
+                val booksCategory = bookshelfRepository.searchBook(bookCategoryUiState.value.currentBookCategory, 0,40).items
                 BookUiState.Success(booksTrending, booksCategory).also { newState->
                     bookUiState = newState
                     _bookCategoryUiState.update {
@@ -110,7 +110,7 @@ class BookWanderViewModel @Inject constructor(
         viewModelScope.launch {
             bookUiState = BookUiState.Loading
             bookUiState = try {
-                val booksCategory = bookshelfRepository.searchBook(currentBookCategory, 0, 10).items
+                val booksCategory = bookshelfRepository.searchBook(currentBookCategory, 0, 40).items
                 BookUiState.Success(booksTrending, booksCategory)
             }catch (e: IOException){
                 BookUiState.Error(R.string.network_error)
