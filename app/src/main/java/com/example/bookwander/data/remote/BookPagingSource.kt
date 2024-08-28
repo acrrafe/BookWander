@@ -11,6 +11,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+/**
+ * For this class we use PagingSource from Paging 3 Library
+ */
 class BookPagingSource @Inject constructor(
     private val networkBookWanderRepositoryImpl: BookWanderRepository,
     private val maxResult: Int
@@ -19,31 +22,46 @@ class BookPagingSource @Inject constructor(
     private var totalItems = 0;
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = state.anchorPosition
 
+    /**
+     * This load function is responsible for handling the logic our pagination
+     * We make rename the page to startIndex as following the api of books
+     * the startIndex is responsible for the new index position for each page
+     * The loadSize variable or also the limit variable is responsible for the total items per page
+     */
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
-        Log.d("BookPagingSourceKey:", "${params.key}")
-        Log.d("BookPagingSourceLoadSize:", "${params.loadSize}")
         val startIndex = params.key ?: 0
         val loadSize = params.loadSize
 
+        /**
+         * Since the maximum result we can get from our api is 40
+         * we're checking if the loaded items is already equal or above the maxResult
+         * if it is, then we'll gonna set the list to empty to prevent loading null items
+         */
         if (totalItems >= maxResult) {
             return LoadResult.Page(
                 data = emptyList(),
                 prevKey = if (startIndex == 0) null else startIndex - loadSize,
-                nextKey = null // No more pages to load
+                nextKey = null
             )
         }
-
         return try {
+            // Here we fetched the type of books and pass other parameters
             val response = networkBookWanderRepositoryImpl.searchBook(
                 "Entrepreneur", startIndex, loadSize
             )
-            val items = response.items
-            totalItems += items.size
-
+            // Get the Books from Items
+            val books = response.items
+            // Add the additional loaded items in our totalItems
+            totalItems += books.size
+            /**
+             * Here we pass the books to our LoadResult.Page
+             * We set the minus and plus for previous and next key to 13
+             * to avoid the duplication of assigning id to keys in our lazyRow
+             */
             LoadResult.Page(
-                data = items,
-                prevKey = if (startIndex == 0) null else startIndex.minus(10),
-                nextKey = if (items.isEmpty()) null else startIndex.plus(10)
+                data = books,
+                prevKey = if (startIndex == 0) null else startIndex.minus(13),
+                nextKey = if (books.isEmpty()) null else startIndex.plus(13)
             )
         } catch (e: IOException) {
             LoadResult.Error(

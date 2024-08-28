@@ -1,6 +1,7 @@
 package com.example.bookwander.ui.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -28,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
@@ -53,8 +56,8 @@ import coil.request.ImageRequest
 import com.example.bookwander.R
 import com.example.bookwander.model.json.Book
 import com.example.bookwander.model.BookContentType
-import com.example.bookwander.presentation.BookCategoryUiState
-import com.example.bookwander.presentation.BookUiState
+import com.example.bookwander.ui.BookCategoryUiState
+import com.example.bookwander.ui.BookUiState
 
 /*
 *  TODO: Apply proper layout and make the images clickable
@@ -172,6 +175,7 @@ fun BookTrendList(
     modifier: Modifier = Modifier,
     onClick: (Book) -> Unit,
 ) {
+
     Column(
         modifier = modifier.padding(top=16.dp)
     ) {
@@ -198,6 +202,11 @@ fun BookTrendList(
                             .aspectRatio(0.8f),
                         onClick = onClick
                     )
+                }
+            }
+            item{
+                if(books.loadState.append is LoadState.Loading){
+                    CircularProgressIndicator()
                 }
             }
         }

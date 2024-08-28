@@ -1,8 +1,8 @@
 package com.example.bookwander.fake
 
 import com.example.bookwander.rules.TestDispatcherRule
-import com.example.bookwander.presentation.BookUiState
-import com.example.bookwander.presentation.BookWanderViewModel
+import com.example.bookwander.ui.BookUiState
+import com.example.bookwander.ui.BookWanderViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule

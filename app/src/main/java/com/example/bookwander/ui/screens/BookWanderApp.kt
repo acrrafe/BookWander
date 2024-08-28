@@ -1,6 +1,7 @@
 package com.example.bookwander.ui.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -33,7 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.bookwander.model.BookContentType
 import com.example.bookwander.model.Screen
-import com.example.bookwander.presentation.BookWanderViewModel
+import com.example.bookwander.ui.BookWanderViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -45,7 +45,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookwander.R
 import com.example.bookwander.model.json.Book
-import com.example.bookwander.presentation.BookCategoryUiState
+import com.example.bookwander.ui.BookCategoryUiState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException

@@ -1,4 +1,4 @@
-package com.example.bookwander.presentation
+package com.example.bookwander.ui
 
 import androidx.annotation.StringRes
 import retrofit2.HttpException
@@ -39,7 +39,7 @@ data class BookCategoryUiState(
 
 @HiltViewModel
 class BookWanderViewModel @Inject constructor(
-    private val  bookPagingSource: BookPagingSource,
+    private val pager: Pager<Int, Book>,
     private val bookshelfRepository: BookWanderRepository
 ): ViewModel(){
 
@@ -58,16 +58,9 @@ class BookWanderViewModel @Inject constructor(
      */
     private var booksTrending = emptyList<Book>()
 
-    val bookTrendingFlow: Flow<PagingData<Book>> = Pager(
-        config = PagingConfig(
-            pageSize = 10,
-            enablePlaceholders = false,
-            maxSize = 30,
-            prefetchDistance = 5,
-            initialLoadSize = 10
-        ),
-        pagingSourceFactory = { bookPagingSource }
-    ).flow.cachedIn(viewModelScope)
+    val bookTrendingFlow = pager
+        .flow
+        .cachedIn(viewModelScope)
 
     // Initialize the function of getting the information of the books
     init{
