@@ -61,7 +61,10 @@ class BookWanderViewModel @Inject constructor(
     val bookTrendingFlow: Flow<PagingData<Book>> = Pager(
         config = PagingConfig(
             pageSize = 10,
-            enablePlaceholders = true
+            enablePlaceholders = false,
+            maxSize = 30,
+            prefetchDistance = 5,
+            initialLoadSize = 10
         ),
         pagingSourceFactory = { bookPagingSource }
     ).flow.cachedIn(viewModelScope)
