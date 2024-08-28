@@ -47,7 +47,7 @@ class BookPagingSource @Inject constructor(
         return try {
             // Here we fetched the type of books and pass other parameters
             val response = networkBookWanderRepositoryImpl.searchBook(
-                "Entrepreneur", startIndex, loadSize
+                "Trending", startIndex, loadSize
             )
             // Get the Books from Items
             val books = response.items

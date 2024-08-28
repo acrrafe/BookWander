@@ -39,7 +39,7 @@ data class BookCategoryUiState(
 
 @HiltViewModel
 class BookWanderViewModel @Inject constructor(
-    private val pager: Pager<Int, Book>,
+    pager: Pager<Int, Book>,
     private val bookshelfRepository: BookWanderRepository
 ): ViewModel(){
 
