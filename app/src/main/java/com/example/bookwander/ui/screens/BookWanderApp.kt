@@ -83,6 +83,7 @@ fun BookshelfApp(
 
            val bookCategoryUiState = bookWanderViewModel.bookCategoryUiState.collectAsStateWithLifecycle().value
            val bookTrendingFlow = bookWanderViewModel.bookTrendingFlow.collectAsLazyPagingItems()
+           val bookCategoryFlow = bookWanderViewModel.bookCategoryFlow.collectAsLazyPagingItems()
 
            NavHost(
                navController = navController,
@@ -95,6 +96,7 @@ fun BookshelfApp(
                        contentPadding = innerPadding,
                        bookUiState = bookWanderViewModel.bookUiState,
                        bookCategoryUiState = bookCategoryUiState,
+                       bookCategoryFlow = bookCategoryFlow,
                        bookTrendingFlow = bookTrendingFlow,
                        onClick = {
                            if(bookContentType != BookContentType.ListAndDetails){

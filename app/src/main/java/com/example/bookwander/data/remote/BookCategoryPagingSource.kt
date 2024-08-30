@@ -1,20 +1,18 @@
 package com.example.bookwander.data.remote
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.bookwander.data.repository.BookWanderRepositoryImpl
 import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.model.json.Book
-import com.example.bookwander.model.json.VolumeInfo
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+
 /**
  * For this class we use PagingSource from Paging 3 Library
  */
-class BookPagingSource @Inject constructor(
+class BookCategoryPagingSource @Inject constructor(
     private val networkBookWanderRepositoryImpl: BookWanderRepository,
     private val currentBookCategory: String,
     private val maxResult: Int
@@ -61,8 +59,8 @@ class BookPagingSource @Inject constructor(
              */
             LoadResult.Page(
                 data = books,
-                prevKey = if (startIndex == 0) null else startIndex.minus(13),
-                nextKey = if (books.isEmpty()) null else startIndex.plus(13)
+                prevKey = if (startIndex == 0) null else startIndex.minus(16),
+                nextKey = if (books.isEmpty()) null else startIndex.plus(16)
             )
         } catch (e: IOException) {
             LoadResult.Error(

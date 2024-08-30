@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import com.example.bookwander.data.repository.BookWanderRepositoryImpl
 import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.data.remote.BookApiService
-import com.example.bookwander.data.remote.BookPagingSource
+import com.example.bookwander.data.remote.BookTrendingPagingSource
 import com.example.bookwander.model.json.Book
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -58,17 +58,17 @@ object AppModule {
     @Provides
     fun maxResults(): Int = 40
 
-//    @Provides
-//    fun provideBookPagingSource(bookPagingSource: BookPagingSource): Pager<Int, Book> {
-//       return Pager(
-//            config = PagingConfig(
-//                pageSize = 10,
-//                enablePlaceholders = false,
-//                maxSize = 40,
-//                prefetchDistance = 5,
-//                initialLoadSize = 10
-//            ),
-//            pagingSourceFactory = { bookPagingSource }
-//       )
-//    }
+    @Provides
+    fun provideBookPagingSource(bookTrendingPagingSource: BookTrendingPagingSource): Pager<Int, Book> {
+       return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = false,
+                maxSize = 40,
+                prefetchDistance = 5,
+                initialLoadSize = 10
+            ),
+            pagingSourceFactory = { bookTrendingPagingSource }
+       )
+    }
 }

@@ -9,16 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.bookwander.R
-import com.example.bookwander.data.remote.BookPagingSource
-import com.example.bookwander.di.BookPagingSourceFactory
+import com.example.bookwander.di.BookCategoryPagingSourceFactory
 import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.model.json.Book
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -43,7 +40,8 @@ data class BookCategoryUiState(
 
 @HiltViewModel
 class BookWanderViewModel @Inject constructor(
-    private val bookPagingSourceFactory: BookPagingSourceFactory,
+    pager: Pager<Int, Book>,
+    private val bookCategoryPagingSourceFactory: BookCategoryPagingSourceFactory,
     private val bookshelfRepository: BookWanderRepository
 ): ViewModel(){
 
@@ -62,8 +60,12 @@ class BookWanderViewModel @Inject constructor(
      */
     private var booksTrending = emptyList<Book>()
 
+    val bookTrendingFlow = pager
+        .flow
+        .cachedIn(viewModelScope)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val bookTrendingFlow = _bookCategoryUiState
+    val bookCategoryFlow = _bookCategoryUiState
         .map { uiState ->
             Pager(
                 config = PagingConfig(
@@ -73,7 +75,7 @@ class BookWanderViewModel @Inject constructor(
                     prefetchDistance = 5,
                     initialLoadSize = 10
                 ),
-                pagingSourceFactory = { bookPagingSourceFactory.create(uiState.currentBookCategory) }
+                pagingSourceFactory = { bookCategoryPagingSourceFactory.create(uiState.currentBookCategory) }
             ).flow
         }
         .flatMapLatest { it }

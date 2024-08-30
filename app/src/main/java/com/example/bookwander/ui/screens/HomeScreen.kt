@@ -74,6 +74,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     bookUiState: BookUiState,
     bookTrendingFlow: LazyPagingItems<Book>,
+    bookCategoryFlow: LazyPagingItems<Book>,
     bookCategoryUiState: BookCategoryUiState,
     onClick: (Book) -> Unit,
     onBookCategoryClick: (String) -> Unit,
@@ -85,7 +86,7 @@ fun HomeScreen(
         is BookUiState.Success -> BooksListScreen(
             bookCategoryUiState = bookCategoryUiState,
             booksTrend = bookTrendingFlow,
-            booksCategorize = bookUiState.bookCategory,
+            bookCategory = bookCategoryFlow,
             bookContentType = bookContentType,
             onClick = onClick,
             onBookCategoryClick = onBookCategoryClick,
@@ -113,7 +114,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 @Composable
 fun BooksListScreen(
     booksTrend: LazyPagingItems<Book>,
-    booksCategorize: List<Book>,
+    bookCategory: LazyPagingItems<Book>,
     bookContentType: BookContentType,
     bookCategoryUiState: BookCategoryUiState,
     onClick: (Book) -> Unit,
@@ -132,7 +133,7 @@ fun BooksListScreen(
                 BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
             }
             item{
-                BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = booksCategorize, modifier = modifier)
+                BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = bookCategory, modifier = modifier)
             }
         }
     }else{
@@ -155,7 +156,7 @@ fun BooksListScreen(
                     BookTrendList(onClick = onClick, books = booksTrend, modifier = modifier)
                 }
                 item{
-                    BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = booksCategorize, modifier = modifier)
+                    BookCategoryList(onClick = onClick, onBookCategoryClick = onBookCategoryClick, books = bookCategory, modifier = modifier)
                 }
             }
             Spacer(modifier = Modifier.width(30.dp))
@@ -216,7 +217,7 @@ fun BookTrendList(
 
 @Composable
 fun BookCategoryList(
-    books: List<Book>,
+    books: LazyPagingItems<Book>,
     modifier: Modifier = Modifier,
     onClick: (Book) -> Unit,
     onBookCategoryClick: (String) -> Unit
@@ -245,13 +246,20 @@ fun BookCategoryList(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
-            items(books, key = {book -> book.id}){
-                book -> BookCardWide(
-                book = book,
-                modifier = Modifier
-                    .aspectRatio(0.8f),
-                onClick = onClick
-                )
+            items(
+                books.itemCount,
+                key = books.itemKey { it.id }
+            ){ book ->
+                book.let {
+                    val item = books[book]
+                    BookCardWide(
+                        book = item!!,
+                        modifier = Modifier
+                            .aspectRatio(0.8f),
+                        onClick = onClick
+                    )
+                }
+
             }
         }
     }
