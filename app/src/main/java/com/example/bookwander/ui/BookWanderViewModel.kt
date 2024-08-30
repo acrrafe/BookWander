@@ -13,12 +13,16 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.bookwander.R
 import com.example.bookwander.data.remote.BookPagingSource
+import com.example.bookwander.di.BookPagingSourceFactory
 import com.example.bookwander.domain.repository.BookWanderRepository
 import com.example.bookwander.model.json.Book
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -39,7 +43,7 @@ data class BookCategoryUiState(
 
 @HiltViewModel
 class BookWanderViewModel @Inject constructor(
-    pager: Pager<Int, Book>,
+    private val bookPagingSourceFactory: BookPagingSourceFactory,
     private val bookshelfRepository: BookWanderRepository
 ): ViewModel(){
 
@@ -58,9 +62,26 @@ class BookWanderViewModel @Inject constructor(
      */
     private var booksTrending = emptyList<Book>()
 
-    val bookTrendingFlow = pager
-        .flow
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookTrendingFlow = _bookCategoryUiState
+        .map { uiState ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = false,
+                    maxSize = 40,
+                    prefetchDistance = 5,
+                    initialLoadSize = 10
+                ),
+                pagingSourceFactory = { bookPagingSourceFactory.create(uiState.currentBookCategory) }
+            ).flow
+        }
+        .flatMapLatest { it }
         .cachedIn(viewModelScope)
+
+//    val bookTrendingFlow = pager
+//        .flow
+//        .cachedIn(viewModelScope)
 
     // Initialize the function of getting the information of the books
     init{

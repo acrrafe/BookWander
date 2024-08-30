@@ -16,6 +16,7 @@ import javax.inject.Inject
  */
 class BookPagingSource @Inject constructor(
     private val networkBookWanderRepositoryImpl: BookWanderRepository,
+    private val currentBookCategory: String,
     private val maxResult: Int
 ): PagingSource<Int, Book>(){
 
@@ -47,7 +48,7 @@ class BookPagingSource @Inject constructor(
         return try {
             // Here we fetched the type of books and pass other parameters
             val response = networkBookWanderRepositoryImpl.searchBook(
-                "Trending", startIndex, loadSize
+                currentBookCategory, startIndex, loadSize
             )
             // Get the Books from Items
             val books = response.items

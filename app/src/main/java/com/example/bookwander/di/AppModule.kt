@@ -58,17 +58,17 @@ object AppModule {
     @Provides
     fun maxResults(): Int = 40
 
-    @Provides
-    fun provideBookPagingSource(bookPagingSource: BookPagingSource): Pager<Int, Book> {
-       return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
-                maxSize = 40,
-                prefetchDistance = 5,
-                initialLoadSize = 10
-            ),
-            pagingSourceFactory = { bookPagingSource }
-       )
-    }
+//    @Provides
+//    fun provideBookPagingSource(bookPagingSource: BookPagingSource): Pager<Int, Book> {
+//       return Pager(
+//            config = PagingConfig(
+//                pageSize = 10,
+//                enablePlaceholders = false,
+//                maxSize = 40,
+//                prefetchDistance = 5,
+//                initialLoadSize = 10
+//            ),
+//            pagingSourceFactory = { bookPagingSource }
+//       )
+//    }
 }
