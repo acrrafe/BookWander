@@ -11,7 +11,9 @@ BookWander is designed to fetch and display books in various categories, allowin
    
 4. Adaptive Layouts: Ensured optimal usability across various screen sizes with adaptive layouts.
    
-5. Unit Testing: Utilized Unit Testing with fakes to simulate data and models, effectively testing network requests.
+6. Dagger-Hilt: Leveraged Dagger-Hilt for seamless implementation of dependency injection.
+   
+7. Unit Testing: Utilized Unit Testing with fakes to simulate data and models, effectively testing network requests.
 
 ## Screenshot
 <p float="left">
